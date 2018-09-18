@@ -5,10 +5,9 @@ import properties
 moara_ip = properties.get_moara_ip()
                                    
 def pos(text):
-    url = 'http://' + moara_ip + '/word/extract'
+    url = 'http://' + moara_ip + '/document/word/extract'
     data = {}
-    data['langCode'] = "KO"
-    data['sentenceValue'] = text
+    data['contents'] = text
     data['isCompound'] = False
     data['isCompoundIn'] = False
     response = requests.post(url, data=json.dumps(data))
@@ -20,10 +19,9 @@ def pos(text):
     return pos
 
 def morphs(text):
-    url = 'http://' + moara_ip + '/word/extract'
+    url = 'http://' + moara_ip + '/document/word/extract'
     data = {}
-    data['langCode'] = "KO"
-    data['sentenceValue'] = text
+    data['contents'] = text
     data['isCompound'] = False
     data['isCompoundIn'] = False
     response = requests.post(url, data=json.dumps(data))
@@ -31,14 +29,13 @@ def morphs(text):
     morphs = []
     for i in range(len(json_arr)):
         morphs.append(json_arr[i]['syllable'])
-
+    
     return morphs
 
 def nouns(text):
-    url = 'http://' + moara_ip + '/word/extract'
+    url = 'http://' + moara_ip + '/document/word/extract'
     data = {}
-    data['langCode'] = "KO"
-    data['sentenceValue'] = text
+    data['contents'] = text
     data['isCompound'] = False
     data['isCompoundIn'] = False
     response = requests.post(url, data=json.dumps(data))
