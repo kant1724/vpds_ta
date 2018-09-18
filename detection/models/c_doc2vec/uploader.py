@@ -40,6 +40,4 @@ def upload_vp_data(root, user, project, data_type, vp_data, voca_list):
                         fw1.write(" ".join(tokenized) + '\n')
                         fw2.write(" ".join(nouns) + '\n')
                         fw3.write(" ".join(tokenization.tagging_words(nouns, voca_entity_dict)) + '\n')
-                        if i == 80:
-                            return
                         
