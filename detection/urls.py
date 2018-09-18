@@ -27,5 +27,6 @@ urlpatterns = [
     path('is_training', views.is_training, name='is_training'),
     path('delete_ckpt', views.delete_ckpt, name='delete_ckpt'),
     path('upload_vp_data', views.upload_vp_data, name='upload_vp_data'),
-    path('get_uploading_config', views.get_uploading_config, name='get_uploading_config')
+    path('get_uploading_config', views.get_uploading_config, name='get_uploading_config'),
+    path('check_online', views.check_online, name='check_online')
 ]

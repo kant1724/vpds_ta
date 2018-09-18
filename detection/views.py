@@ -125,3 +125,7 @@ def get_uploading_config(request):
         uploading_config = jaro_winkler_worker.get_uploading_config(user, project, data_type)
         
     return JsonResponse({"uploading_config" : uploading_config})
+
+@csrf_exempt
+def check_online(request):
+    return JsonResponse({})
