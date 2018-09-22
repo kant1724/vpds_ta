@@ -113,7 +113,7 @@ class runner():
             x = x[:len(x) - 1]
             sample_len = len(x)
             d = {}
-            prob = round(jellyfish.jaro_winkler("".join(x), "".join(sample_with_tag[i][:sample_len])) * 100)
+            prob = round(jellyfish.jaro_winkler(x, sample_with_tag[i][:sample_len]) * 100)
             if prob == 100 or prob == 0:
                 continue
             if prob < int(vp_threshold):
