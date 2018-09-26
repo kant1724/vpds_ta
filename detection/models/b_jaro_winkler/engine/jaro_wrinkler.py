@@ -95,6 +95,11 @@ def new_jaro_wrinkler(ying, yang, vp_yn, jw_vp_increment_point):
                     common_chars += jw_vp_increment_point
                     ying_sub += jw_vp_increment_point - 1
                     yang_sub += jw_vp_increment_point - 1
+                elif vp_yn.get(ying_ch, None) != None:
+                    incre = max(int(jw_vp_increment_point / 2), 1)
+                    common_chars += incre
+                    ying_sub += incre - 1
+                    yang_sub += incre - 1
                 else:
                     common_chars += 1
                 break
