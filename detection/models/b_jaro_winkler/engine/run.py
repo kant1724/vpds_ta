@@ -1,6 +1,5 @@
 import os
 import time
-import jellyfish
 from detection.extension import tokenization
 from detection.models.b_jaro_winkler.engine import jaro_ibk
 
@@ -61,7 +60,7 @@ class runner():
             
         self.ready_to_predict = True
     
-    def predict(self, x, min_vp_voca_same_rate, vp_threshold, less_threshold_decrease_point):
+    def predict(self, x, min_vp_voca_same_rate, vp_threshold, less_threshold_decrease_point, jw_vp_increment_point):
         try_cnt = 0                
         while self.ready_to_predict == False:
             if self.error:
@@ -97,7 +96,7 @@ class runner():
                 
         x = tokenization.tagging_words(nouns, self.voca_entity)
         if len(sample_with_tag) > 0:
-            max_prob, similar_sample = self.get_jaro_winkler_score(x, sample_tokenized, sample_nouns, sample_with_tag, vp_threshold, less_threshold_decrease_point)
+            max_prob, similar_sample = self.get_jaro_winkler_score(x, sample_tokenized, sample_nouns, sample_with_tag, vp_threshold, less_threshold_decrease_point, jw_vp_increment_point)
             if len(similar_sample) == 0:
                 similar_sample = [['Not Found', 0]]
         else:
@@ -105,7 +104,7 @@ class runner():
             
         return max_prob, similar_sample, tokenized
         
-    def get_jaro_winkler_score(self, x, sample, nouns, sample_with_tag, vp_threshold, less_threshold_decrease_point):
+    def get_jaro_winkler_score(self, x, sample, nouns, sample_with_tag, vp_threshold, less_threshold_decrease_point, jw_vp_increment_point):
         similar_sample = []            
         max_prob = 0        
         for i in range(len(sample_with_tag)):
@@ -114,7 +113,7 @@ class runner():
             x = x[:len(x) - 1]
             sample_len = len(x)
             d = {}
-            prob = round(jaro_ibk.jaro_ibk(x, sample_with_tag[i][:sample_len]) * 100)
+            prob = round(jaro_ibk.jaro_ibk(x, sample_with_tag[i][:sample_len], self.vp_yn, int(jw_vp_increment_point)) * 100)
             if prob == 100 or prob == 0:
                 continue
             if prob < int(vp_threshold):

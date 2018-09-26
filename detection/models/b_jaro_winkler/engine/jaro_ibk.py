@@ -64,7 +64,7 @@ def jaro_winkler(ying, yang, long_tolerance=False, winklerize=True):
 
     return weight
 
-def jaro_ibk(ying, yang):
+def jaro_ibk(ying, yang, vp_yn, jw_vp_increment_point):
     ying_len = len(ying)
     yang_len = len(yang)
 
@@ -79,6 +79,9 @@ def jaro_ibk(ying, yang):
     ying_flags = [False]*ying_len
     yang_flags = [False]*yang_len
 
+    ying_sub = ying_len
+    yang_sub = yang_len
+
     # looking only within search range, count & flag matched pairs
     common_chars = 0
     for i, ying_ch in enumerate(ying):
@@ -87,7 +90,12 @@ def jaro_ibk(ying, yang):
         for j in range(low, hi+1):
             if not yang_flags[j] and yang[j] == ying_ch:
                 ying_flags[i] = yang_flags[j] = True
-                common_chars += 1
+                if vp_yn.get(ying_ch, None) == 'Y':
+                    common_chars += jw_vp_increment_point
+                    ying_sub += jw_vp_increment_point - 1
+                    yang_sub += jw_vp_increment_point - 1
+                else:
+                    common_chars += 1
                 break
 
     # short circuit if no characters match
@@ -109,7 +117,7 @@ def jaro_ibk(ying, yang):
 
     # adjust for similarities in nonmatched characters
     common_chars = float(common_chars)
-    weight = ((common_chars/ying_len + common_chars/yang_len +
+    weight = ((common_chars/ying_sub + common_chars/yang_sub +
               (common_chars-trans_count) / common_chars)) / 3
 
     return weight

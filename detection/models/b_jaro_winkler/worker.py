@@ -4,9 +4,11 @@ from detection.models.b_jaro_winkler import properties as p
 from detection.models.b_jaro_winkler import uploader
 
 def get_answer(user, project, data_type, x
-             , min_vp_voca_same_rate, vp_threshold, less_threshold_decrease_point):    
+             , min_vp_voca_same_rate, vp_threshold, less_threshold_decrease_point
+             , jw_vp_increment_point):    
     predict_result, similar_sample, tokenized = rt.get_answer(p.get_root(), user, project, data_type, x
-                                                            , min_vp_voca_same_rate, vp_threshold, less_threshold_decrease_point)
+                                                            , min_vp_voca_same_rate, vp_threshold, less_threshold_decrease_point
+                                                            , jw_vp_increment_point)
     
     return str(predict_result), str(similar_sample), str(tokenized)
 

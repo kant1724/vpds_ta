@@ -23,8 +23,10 @@ def get_answer_from_jw(request):
     min_vp_voca_same_rate = request.POST.get('min_vp_voca_same_rate', '')
     vp_threshold = request.POST.get('vp_threshold', '')
     less_threshold_decrease_point = request.POST.get('less_threshold_decrease_point', '')
+    jw_vp_increment_point = request.POST.get('jw_vp_increment_point', '')
     predict_result, similar_sample, tokenized = jaro_winkler_worker.get_answer(user, project, data_type, x
-                                                                             , min_vp_voca_same_rate, vp_threshold, less_threshold_decrease_point)
+                                                                             , min_vp_voca_same_rate, vp_threshold, less_threshold_decrease_point
+                                                                             , jw_vp_increment_point)
     
     return JsonResponse({"predict_result" : predict_result, "similar_sample" : similar_sample, "tokenized" : tokenized})
 
