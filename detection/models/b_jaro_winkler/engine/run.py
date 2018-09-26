@@ -2,6 +2,7 @@ import os
 import time
 import jellyfish
 from detection.extension import tokenization
+from detection.models.b_jaro_winkler.engine import jaro_ibk
 
 class runner():
     vp_yn = {}
@@ -113,7 +114,7 @@ class runner():
             x = x[:len(x) - 1]
             sample_len = len(x)
             d = {}
-            prob = round(jellyfish.jaro_winkler(x, sample_with_tag[i][:sample_len]) * 100)
+            prob = round(jaro_ibk.jaro_ibk(x, sample_with_tag[i][:sample_len]) * 100)
             if prob == 100 or prob == 0:
                 continue
             if prob < int(vp_threshold):
