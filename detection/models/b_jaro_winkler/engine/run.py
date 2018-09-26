@@ -1,7 +1,7 @@
 import os
 import time
 from detection.extension import tokenization
-from detection.models.b_jaro_winkler.engine import jaro_ibk
+from detection.models.b_jaro_winkler.engine import jaro_wrinkler
 
 class runner():
     vp_yn = {}
@@ -113,7 +113,7 @@ class runner():
             x = x[:len(x) - 1]
             sample_len = len(x)
             d = {}
-            prob = round(jaro_ibk.jaro_ibk(x, sample_with_tag[i][:sample_len], self.vp_yn, int(jw_vp_increment_point)) * 100)
+            prob = round(jaro_wrinkler.new_jaro_wrinkler(x, sample_with_tag[i][:sample_len], self.vp_yn, int(jw_vp_increment_point)) * 100)
             if prob == 100 or prob == 0:
                 continue
             if prob < int(vp_threshold):
