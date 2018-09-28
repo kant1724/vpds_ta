@@ -4,3 +4,4 @@ server_ip.*
 *.project
 *.pydevproject
 **/output
+**/log
