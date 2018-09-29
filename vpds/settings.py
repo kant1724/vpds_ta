@@ -148,3 +148,13 @@ LOGGING = {
         'handlers': ['console', 'logfile']
     },
 }
+
+ELASTIC_APM = {
+    'SERVICE_NAME' : '',
+    'SECRET_TOKEN' : '',
+    'SERVER_URL' : 'http://10.62.72.19:8200' 
+}
+
+MIDDLEWARE = {
+    'elasticapm.contrib.django.middleware.TracingMiddleware'
+}
