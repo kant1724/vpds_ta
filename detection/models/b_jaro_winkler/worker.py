@@ -22,3 +22,7 @@ def get_uploading_config(user, project, data_type):
         uploading_config = f.readline()
 
         return uploading_config
+
+def write_in_out_log(model_name, text, probability):    
+    with open(os.path.join('log', 'in_out_log.txt'), 'a', encoding='utf8') as fw:
+        fw.write('model_name : ' + model_name + ", text : " + text + ", probability : " + str(probability) + '\n')

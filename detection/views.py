@@ -103,7 +103,14 @@ def get_probability(request):
     user, project, data_type = 'vpds', 'vpds', 'vp_data'
     req = json.loads(request.body)
     x = req.get('contents', '')
-    predict_result, _, _ = doc2vec_worker.get_answer(user, project, data_type, x)
+    min_vp_voca_same_rate = 0
+    vp_threshold = 50
+    less_threshold_decrease_point = 30
+    jw_vp_increment_point = 2
+    predict_result, _, _ = jaro_winkler_worker.get_answer(user, project, data_type, x
+                                                        , min_vp_voca_same_rate, vp_threshold, less_threshold_decrease_point
+                                                        , jw_vp_increment_point)
+    jaro_winkler_worker.write_in_out_log("jw", x, predict_result)
     
     return JsonResponse({"reply" : float(predict_result) / 100})
 
