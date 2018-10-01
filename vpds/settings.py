@@ -50,7 +50,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'elasticapm.contrib.django.middleware.TracingMiddleware'
+    'elasticapm.contrib.django.middleware.TracingMiddleware',
 ]
 
 ROOT_URLCONF = 'vpds.urls'
@@ -152,7 +152,7 @@ LOGGING = {
 }
 
 ELASTIC_APM = {
-    'SERVICE_NAME' : '',
+    'SERVICE_NAME' : 'vpds-ita-ta',
     'SECRET_TOKEN' : '',
     'SERVER_URL' : 'http://10.62.72.19:8200' 
 }
