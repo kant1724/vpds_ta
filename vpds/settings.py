@@ -152,7 +152,7 @@ LOGGING = {
 }
 
 ELASTIC_APM = {
-    'SERVICE_NAME' : 'vpds-ita-ta',
+    'SERVICE_NAME' : 'ibk-ita-ta-182-173-185-235',
     'SECRET_TOKEN' : '',
     'SERVER_URL' : 'http://10.62.72.19:8200' 
 }
