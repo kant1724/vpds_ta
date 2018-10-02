@@ -150,8 +150,11 @@ LOGGING = {
     },
 }
 
+import socket
+server_ip_addr = socket.gethostbyname(socket.gethostname())
+server_ip_addr = server_ip_addr.replace('.', '-')
 ELASTIC_APM = {
-    'SERVICE_NAME' : 'ibk-ita-ta-182-173-185-235',
+    'SERVICE_NAME' : 'ibk-ita-ta-' + str(server_ip_addr),
     'SECRET_TOKEN' : '',
     'DEBUG' : True,
     'SERVER_URL' : 'http://10.62.72.19:8200' 
