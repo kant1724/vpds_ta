@@ -1,4 +1,5 @@
 import os
+import datetime
 from detection.models.b_jaro_winkler import running_thread as rt
 from detection.models.b_jaro_winkler import properties as p
 from detection.models.b_jaro_winkler import uploader
@@ -24,5 +25,6 @@ def get_uploading_config(user, project, data_type):
         return uploading_config
 
 def write_in_out_log(model_name, text, probability):    
-    with open(os.path.join('log', 'in_out_log.txt'), 'a', encoding='utf8') as fw:
+    file_name = 'in_out_log_' + datetime.datetime.today().strftime('%Y-%m-%d')
+    with open(os.path.join('log', file_name + '.txt'), 'a', encoding='utf8') as fw:
         fw.write('model_name : ' + model_name + ", text : " + text + ", probability : " + str(probability) + '\n')
