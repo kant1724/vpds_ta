@@ -18,6 +18,7 @@ class runner():
     
     def init(self, root, user, project, data_type):
         self.vp_yn = {}
+        self.voca_weight = {}
         self.voca_entity = {}
         self.vp_data_nouns = []
         self.vp_data_with_tag = []
@@ -34,6 +35,7 @@ class runner():
                 arr = line.split('^')
                 self.voca_entity[arr[0]] = arr[1]
                 self.vp_yn[arr[0]] = arr[2]
+                self.voca_weight[arr[0]] = arr[3]
         
         with open(os.path.join(path, 'vp_data_nouns.txt'), 'r', encoding='utf8') as f1:
             with open(os.path.join(path, 'tokenized_vp_data.txt'), 'r', encoding='utf8') as f2:
@@ -113,7 +115,7 @@ class runner():
             x = x[:len(x) - 1]
             sample_len = len(x)
             d = {}
-            prob = round(jaro_wrinkler.new_jaro_wrinkler(x, nouns[i][:sample_len], self.vp_yn, 1) * 100)
+            prob = round(jaro_wrinkler.new_jaro_wrinkler(x, nouns[i][:sample_len], self.voca_weight) * 100)
             if prob == 100 or prob == 0:
                 continue
             if prob < int(vp_threshold):
