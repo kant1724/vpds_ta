@@ -60,7 +60,7 @@ class runner():
             
         self.ready_to_predict = True
     
-    def predict(self, x, min_vp_voca_same_rate, vp_threshold, less_threshold_decrease_point, jw_vp_increment_point):
+    def predict(self, x, min_vp_voca_same_rate, vp_threshold, less_threshold_decrease_point):
         try_cnt = 0                
         while self.ready_to_predict == False:
             if self.error:
@@ -96,7 +96,7 @@ class runner():
                 
         x = nouns
         if len(sample_with_tag) > 0:
-            max_prob, similar_sample = self.get_jaro_winkler_score(x, sample_tokenized, sample_nouns, vp_threshold, less_threshold_decrease_point, jw_vp_increment_point)
+            max_prob, similar_sample = self.get_jaro_winkler_score(x, sample_tokenized, sample_nouns, vp_threshold, less_threshold_decrease_point)
             if len(similar_sample) == 0:
                 similar_sample = [['Not Found', 0]]
         else:
@@ -104,7 +104,7 @@ class runner():
             
         return max_prob, similar_sample, tokenized
         
-    def get_jaro_winkler_score(self, x, sample, nouns, vp_threshold, less_threshold_decrease_point, jw_vp_increment_point):
+    def get_jaro_winkler_score(self, x, sample, nouns, vp_threshold, less_threshold_decrease_point):
         similar_sample = []            
         max_prob = 0        
         for i in range(len(nouns)):
@@ -113,7 +113,7 @@ class runner():
             x = x[:len(x) - 1]
             sample_len = len(x)
             d = {}
-            prob = round(jaro_wrinkler.new_jaro_wrinkler(x, nouns[i][:sample_len], self.vp_yn, int(jw_vp_increment_point)) * 100)
+            prob = round(jaro_wrinkler.new_jaro_wrinkler(x, nouns[i][:sample_len], self.vp_yn, 1) * 100)
             if prob == 100 or prob == 0:
                 continue
             if prob < int(vp_threshold):

@@ -10,8 +10,7 @@ def remove_runner(user, project, data_type):
             runner_thread.remove(runner_thread[i])
     
 def get_answer(root, user, project, data_type, x
-             , min_vp_voca_same_rate, vp_threshold, less_threshold_decrease_point
-             , jw_vp_increment_point):
+             , min_vp_voca_same_rate, vp_threshold, less_threshold_decrease_point):
     global runner_thread
     runner = None
     for i in range(len(runner_thread)):
@@ -22,6 +21,6 @@ def get_answer(root, user, project, data_type, x
         runner = run.runner()
         runner.init(root, user, project, data_type)
         runner_thread.append({"user" : user, "project" : project, "data_type" : data_type, "runner" : runner})
-    predict_result, similar_sample, tokenized = runner.predict(x, min_vp_voca_same_rate, vp_threshold, less_threshold_decrease_point, jw_vp_increment_point)
+    predict_result, similar_sample, tokenized = runner.predict(x, min_vp_voca_same_rate, vp_threshold, less_threshold_decrease_point)
     
     return predict_result, similar_sample, tokenized

@@ -13,7 +13,8 @@ def upload_vp_data(root, user, project, data_type, vp_data, voca_list, uploading
             voca_nm = voca['voca_nm']
             voca_entity = voca['voca_entity']
             vp_yn = voca['vp_yn']
-            fw.write(voca_nm + "^" + voca_entity + "^" + vp_yn + '\n')
+            voca_weight = voca['voca_weight']
+            fw.write(voca_nm + "^" + voca_entity + "^" + vp_yn + "^" + str(voca_weight) + "\n")
             vp_yn_dict[voca_nm] = vp_yn
     
     with open(os.path.join(path, 'tokenized_vp_data.txt'), 'w', encoding='utf8') as fw1:
