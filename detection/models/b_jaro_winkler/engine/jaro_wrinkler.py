@@ -64,7 +64,7 @@ def jaro_winkler(ying, yang, long_tolerance=False, winklerize=True):
 
     return weight
 
-def new_jaro_wrinkler(ying, yang, vp_yn, jw_vp_increment_point):
+def new_jaro_wrinkler(ying, yang, voca_weight):
     ying_len = len(ying)
     yang_len = len(yang)
 
@@ -89,17 +89,12 @@ def new_jaro_wrinkler(ying, yang, vp_yn, jw_vp_increment_point):
         hi = i + search_range if i + search_range < yang_len else yang_len - 1
         for j in range(low, hi+1):
             if not yang_flags[j] and yang[j] == ying_ch:
-                if vp_yn.get(ying_ch, None) != None:
+                if voca_weight.get(ying_ch, None) != None:
                     ying_flags[i] = yang_flags[j] = True
-                if vp_yn.get(ying_ch, None) == 'Y':
-                    common_chars += jw_vp_increment_point
-                    ying_sub += jw_vp_increment_point - 1
-                    yang_sub += jw_vp_increment_point - 1
-                elif vp_yn.get(ying_ch, None) != None:
-                    incre = max(int(jw_vp_increment_point / 2), 1)
-                    common_chars += incre
-                    ying_sub += incre - 1
-                    yang_sub += incre - 1
+                    point = int(voca_weight[ying_ch])
+                    common_chars += point
+                    ying_sub += point - 1
+                    yang_sub += point - 1                
                 else:
                     common_chars += 1
                 break
