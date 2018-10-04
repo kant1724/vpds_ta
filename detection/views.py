@@ -108,7 +108,6 @@ def get_probability(request):
     predict_result, _, _ = jaro_winkler_worker.get_answer(user, project, data_type, x
                                                         , min_vp_voca_same_rate, vp_threshold, less_threshold_decrease_point
                                                         , jw_vp_increment_point)
-    jaro_winkler_worker.write_in_out_log("jw", x, predict_result)
     
     return JsonResponse({"reply" : float(predict_result) / 100})
 
