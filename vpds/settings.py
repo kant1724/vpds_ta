@@ -26,8 +26,7 @@ SECRET_KEY = ')l)c#8=8d=x5=m8dn-g!sw(s@2q_uyz04q9b3q94n85k5i!trg'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', '172.27.0.96', '10.39.131.183', '10.41.5.221', '*']
-
+ALLOWED_HOSTS = ['127.0.0.1', '10.39.131.190', 'slb-55230.gov-ncloudslb.com']
 
 # Application definition
 
