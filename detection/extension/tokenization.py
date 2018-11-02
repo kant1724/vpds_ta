@@ -38,7 +38,7 @@ def extract_vp_word_in_pos(pos, vp_yn):
         first = pos[start][0]
         t = pos[start][1]
         tokenized.append(first)
-        if t == 'NNP' or t == 'NNG':
+        if t == 'NNP' or t == 'NNG' or t == 'UNDEFINED':
             if len(first) > 1:
                 nouns.append(first)
         start += 1
