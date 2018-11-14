@@ -9,7 +9,6 @@ def pos(text):
     data = {}
     data['contents'] = text
     data['isCompound'] = False
-    data['isCompoundIn'] = False
     response = requests.post(url, data=json.dumps(data))
     json_arr = json.loads(response.content.decode('utf8'))
     pos = []
@@ -25,7 +24,6 @@ def morphs(text):
     data = {}
     data['contents'] = text
     data['isCompound'] = False
-    data['isCompoundIn'] = False
     response = requests.post(url, data=json.dumps(data))
     json_arr = json.loads(response.content.decode('utf8'))
     morphs = []
@@ -41,7 +39,6 @@ def nouns(text):
     data = {}
     data['contents'] = text
     data['isCompound'] = False
-    data['isCompoundIn'] = False
     response = requests.post(url, data=json.dumps(data))
     json_arr = json.loads(response.content.decode('utf8'))
     nouns = []
