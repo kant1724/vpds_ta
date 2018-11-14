@@ -103,7 +103,7 @@ def get_probability(request):
     x = req.get('contents', '')
     min_vp_voca_same_rate = 0
     vp_threshold = 50
-    less_threshold_decrease_point = 30
+    less_threshold_decrease_point = 10
     predict_result, _, _ = jaro_winkler_worker.get_answer(user, project, data_type, x
                                                         , min_vp_voca_same_rate, vp_threshold, less_threshold_decrease_point)
     
