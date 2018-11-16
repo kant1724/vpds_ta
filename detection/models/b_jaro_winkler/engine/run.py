@@ -113,7 +113,7 @@ class runner():
         for i in range(len(nouns)):
             if len(x) > len(nouns[i]):
                 continue
-            sample_len = min(len(nouns[i]), max(len(x), 50))
+            sample_len = min(len(nouns[i]), max(len(x), 200))
             d = {}
             prob = round(jaro_wrinkler.new_jaro_wrinkler(x, nouns[i][:sample_len], self.voca_weight) * 100)
             print("prob: " + str(prob))
