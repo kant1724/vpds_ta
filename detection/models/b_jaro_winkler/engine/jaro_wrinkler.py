@@ -121,7 +121,6 @@ def new_jaro_wrinkler(ying, yang, voca_weight):
     common_chars = float(common_chars)
     a = common_chars / ying_sub
     b = common_chars / yang_sub
-    print(a, b)
     weight = (a + b) / 2
 
     return weight
