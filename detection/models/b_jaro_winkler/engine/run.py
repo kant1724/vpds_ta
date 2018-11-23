@@ -81,7 +81,6 @@ class runner():
             if self.vp_yn.get(n, '') == 'Y':
                 x_vp_yn_cnt += 1
         vp_yn_cnt = {}
-        print(nouns)
         for i in range(len(nouns)):
             vp_yn_data_idx_arr = self.vp_yn_idx.get(nouns[i], '')
             print(vp_yn_data_idx_arr)
@@ -97,7 +96,6 @@ class runner():
                 sample_with_tag.append(self.vp_data_with_tag[key])
                 sample_tokenized.append(self.vp_data_tokenized[key])
         x = nouns
-        print(sample_with_tag)
         if len(sample_with_tag) > 0:
             max_prob, similar_sample = self.get_jaro_winkler_score(x, sample_tokenized, sample_nouns, vp_threshold, less_threshold_decrease_point)
             if len(similar_sample) == 0:
@@ -113,10 +111,9 @@ class runner():
         for i in range(len(nouns)):
             if len(x) > len(nouns[i]):
                 continue
-            sample_len = min(len(nouns[i]), max(len(x), 200))
+            sample_len = min(len(nouns[i]), max(len(x), 100))
             d = {}
             prob = round(jaro_wrinkler.new_jaro_wrinkler(x, nouns[i][:sample_len], self.voca_weight) * 100)
-            print("prob: " + str(prob))
             if prob == 0:
                 continue
             if prob < int(vp_threshold):

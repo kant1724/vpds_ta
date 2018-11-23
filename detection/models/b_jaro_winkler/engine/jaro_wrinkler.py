@@ -84,6 +84,8 @@ def new_jaro_wrinkler(ying, yang, voca_weight):
 
     # looking only within search range, count & flag matched pairs
     common_chars = 0
+    cur_weight = 0
+    cur = 0
     for i, ying_ch in enumerate(ying):
         low = i - search_range if i > search_range else 0
         hi = i + search_range if i + search_range < yang_len else yang_len - 1
@@ -91,34 +93,33 @@ def new_jaro_wrinkler(ying, yang, voca_weight):
             if not yang_flags[j] and yang[j] == ying_ch:
                 if voca_weight.get(ying_ch, None) != None:
                     ying_flags[i] = yang_flags[j] = True
-                    point = int(voca_weight[ying_ch])
-                    common_chars += point
-                    ying_sub += point - 1
-                    yang_sub += point - 1                
+                    additional_point = int(voca_weight[ying_ch]) - 1
+                    if additional_point > 0:
+                        if cur_weight != 0:
+                            common_chars += cur_weight + additional_point
+                            ying_sub += cur_weight + additional_point
+                            yang_sub += cur_weight + additional_point
+                            cur_weight = 0
+                            cur = -1
+                        else:
+                            cur_weight += additional_point
+                    common_chars += 1
+                    if cur == 10:
+                        cur_weight = 0
+                        cur = -1
                 else:
                     common_chars += 1
+                cur += 1
                 break
-
     # short circuit if no characters match
     if not common_chars:
         return 0.0
 
-    # count transpositions
-    k = trans_count = 0
-    for i, ying_f in enumerate(ying_flags):
-        if ying_f:
-            for j in range(k, yang_len):
-                if yang_flags[j]:
-                    k = j + 1
-                    break
-            if ying[i] != yang[j]:
-                trans_count += 1
-                
-    trans_count /= 2
-
     # adjust for similarities in nonmatched characters
     common_chars = float(common_chars)
-    weight = ((common_chars/ying_sub + common_chars/yang_sub +
-              (common_chars-trans_count) / common_chars)) / 3
+    a = common_chars/ying_sub
+    b = common_chars/yang_sub
+    print(a, b)
+    weight = (a + b) / 2
 
     return weight
