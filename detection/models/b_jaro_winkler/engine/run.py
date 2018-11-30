@@ -92,6 +92,9 @@ class runner():
                         vp_yn_cnt[vp_yn_data_idx] += 1
         for key, value in vp_yn_cnt.items():
             if value >= max(int(x_vp_yn_cnt * float(min_vp_voca_same_rate)), 2):
+                if len(self.vp_data_nouns[key]) <= 20:
+                    #print("noun_len : " + str(len(self.vp_data_nouns[key])))
+                    continue
                 sample_nouns.append(self.vp_data_nouns[key])                
                 sample_with_tag.append(self.vp_data_with_tag[key])
                 sample_tokenized.append(self.vp_data_tokenized[key])
