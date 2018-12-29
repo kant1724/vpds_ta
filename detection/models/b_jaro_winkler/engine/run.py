@@ -117,7 +117,7 @@ class runner():
             sample_len = min(len(nouns[i]), max(len(x), 100))
             d = {}
             prob = round(jaro_wrinkler.new_jaro_wrinkler(x, nouns[i][:sample_len], self.voca_weight) * 100)
-            if prob == 0:
+            if prob == 0 or prob == 100:
                 continue
             if prob < int(vp_threshold):
                 prob = max(prob - int(less_threshold_decrease_point), 0)
