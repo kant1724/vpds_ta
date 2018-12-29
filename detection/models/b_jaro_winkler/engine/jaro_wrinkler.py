@@ -106,6 +106,7 @@ def new_jaro_wrinkler(ying, yang, voca_weight):
                             cur_weight = 0
                             cur = -1
                         else:
+                            common_chars += additional_point / 2
                             ying_sub += additional_point / 2
                             yang_sub += additional_point / 2
                             cur_weight += additional_point / 2
