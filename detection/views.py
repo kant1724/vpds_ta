@@ -116,6 +116,10 @@ def upload_vp_data(request):
     voca_list = eval(request.POST.get('voca_list', ''))
     model_type = request.POST.get('model_type', '')
     uploading_config = request.POST.get('uploading_config', '')
+    key = request.POST.get('key', '')
+    if key != 'jw@1234':
+        print("invalid key!!!!!!!!!!!!")
+        return JsonResponse({})
     if model_type == '2':
         jaro_winkler_worker.upload_vp_data(user, project, data_type, vp_data, voca_list, uploading_config)
     
