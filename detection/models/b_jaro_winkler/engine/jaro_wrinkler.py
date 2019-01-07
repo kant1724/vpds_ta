@@ -81,9 +81,11 @@ def new_jaro_wrinkler(ying, yang, voca_weight):
 
     ying_sub = 0
     yang_sub = 0
-    for i in range(len(yang)):
-        if voca_weight.get(yang[i], None) == None:
+    for i in range(len(ying)):
+        if voca_weight.get(ying[i], None) == None:            
             ying_sub += 1
+    for i in range(len(yang)):
+        if voca_weight.get(yang[i], None) == None:            
             yang_sub += 1
             
     # looking only within search range, count & flag matched pairs
