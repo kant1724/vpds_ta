@@ -87,7 +87,10 @@ def new_jaro_wrinkler(ying, yang, voca_weight):
     for i in range(len(yang)):
         if voca_weight.get(yang[i], None) == None:            
             yang_sub += 1
-            
+    
+    print(ying_sub)
+    print(yang_sub)
+    
     # looking only within search range, count & flag matched pairs
     common_chars = 0
     cur_weight = 0
