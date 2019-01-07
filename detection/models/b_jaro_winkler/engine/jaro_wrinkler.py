@@ -80,18 +80,12 @@ def new_jaro_wrinkler(ying, yang, voca_weight):
     yang_flags = [False] * yang_len
 
     ying_sub = 0
-    yang_sub = 0
-    for i in range(len(ying)):
-        if voca_weight.get(ying[i], None) == None:            
-            ying_sub += 1
+    yang_sub = 0    
     for i in range(len(yang)):
-        if voca_weight.get(yang[i], None) == None:            
-            yang_sub += 1
+        if voca_weight.get(yang[i], None) != None:
+            ying_sub += 1
+            yang_sub += 1 
     
-    print(ying_sub)
-    print(yang_sub)
-    
-    # looking only within search range, count & flag matched pairs
     common_chars = 0
     cur_weight = 0
     cur = 0
@@ -118,7 +112,6 @@ def new_jaro_wrinkler(ying, yang, voca_weight):
                     if cur == 10:
                         cur_weight = 0
                         cur = -1
-                else:
                     common_chars += 1
                 cur += 1
                 break                
