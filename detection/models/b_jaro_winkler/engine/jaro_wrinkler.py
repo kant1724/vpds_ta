@@ -87,8 +87,8 @@ def new_jaro_wrinkler(ying, yang, voca_weight):
             yang_sub += 1 
     
     common_chars = 0
-    cur_weight = 0
     cur = 0
+    cnt = 1
     for i, ying_ch in enumerate(ying):
         low = i - search_range if i > search_range else 0
         hi = i + search_range if i + search_range < yang_len else yang_len - 1
@@ -98,21 +98,13 @@ def new_jaro_wrinkler(ying, yang, voca_weight):
                     ying_flags[i] = yang_flags[j] = True
                     additional_point = int(voca_weight[ying_ch]) - 1
                     if additional_point > 0:
-                        if cur_weight != 0:
-                            common_chars += cur_weight + additional_point
-                            ying_sub += cur_weight + additional_point
-                            yang_sub += cur_weight + additional_point
-                            cur_weight = 0
-                            cur = -1
-                        else:
-                            common_chars += additional_point / 2
-                            ying_sub += additional_point / 2
-                            yang_sub += additional_point / 2
-                            cur_weight += additional_point / 2
-                    if cur == 10:
-                        cur_weight = 0
-                        cur = -1
+                        u = 1.3
+                        val = pow(additional_point, u)
+                        common_chars += val
+                        ying_sub += val
+                        yang_sub += val                        
                     common_chars += 1
+                    cnt += 1
                 cur += 1
                 break                
     # short circuit if no characters match
