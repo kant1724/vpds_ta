@@ -114,8 +114,10 @@ def new_jaro_wrinkler(ying, yang, voca_weight):
                     if cur == 10:
                         cur_weight = 0
                         cur = -1
+                else:
+                    common_chars += 1
                 cur += 1
-                break
+                break                
     # short circuit if no characters match
     if not common_chars:
         return 0.0
