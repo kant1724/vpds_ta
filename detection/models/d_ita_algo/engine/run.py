@@ -7,9 +7,9 @@ class runner():
     vp_yn = {}
     voca_entity = {}
     vp_data = []
-    vp_data_nouns = []
-    vp_data_with_tag = []
-    vp_data_tokenized = []
+    vp_data_nouns = {}
+    vp_data_with_tag = {}
+    vp_data_tokenized = {}
     vp_yn_idx = {}
     ready_to_predict = False
     error = False
@@ -17,9 +17,9 @@ class runner():
     retry_limit = 200
     
     def init(self, root, user, project, data_type):
-        self.vp_yn = {}
-        self.voca_weight = {}
-        self.voca_entity = {}
+        self.vp_yn = {'1' : {}}
+        self.voca_weight = {'1' : {}}
+        self.voca_entity = {'1' : {}}
         self.vp_data_nouns = {}
         self.vp_data_with_tag = {}
         self.vp_data_tokenized = {}
@@ -29,16 +29,22 @@ class runner():
         path = os.path.join(root, user, project, data_type, 'vp_data_file')
         self.error = False
         with open(os.path.join(path, 'voca_data.txt'), 'r', encoding='utf8') as f:
+            vp_yn_in_group = {}
+            voca_entity_in_group = {}
+            voca_weight_in_group = {}
             lines = f.readlines()
             for line in lines:
                 line = line.replace('\n', '')
                 arr = line.split('^')
-                self.voca_entity[arr[0]] = arr[1]
-                self.vp_yn[arr[0]] = arr[2]
-                self.voca_weight[arr[0]] = arr[3]
+                voca_entity_in_group[arr[0]] = arr[1]
+                vp_yn_in_group[arr[0]] = arr[2]
+                voca_weight_in_group[arr[0]] = arr[3]
+        self.vp_yn['1'] = vp_yn_in_group
+        self.voca_entity['1'] = voca_entity_in_group
+        self.voca_weight['1'] = voca_weight_in_group
         group_list = os.listdir(path)
         for group_no in group_list:
-            if os.path.isdir(path, group_no) == False:
+            if os.path.isdir(os.path.join(path, group_no)) == False:
                 continue
             vp_data_nouns_in_group = []
             vp_data_with_tag_in_group = []
@@ -52,7 +58,7 @@ class runner():
                         line = line.replace('\n', '')
                         nouns = line.split(' ')
                         for i in range(len(nouns)):
-                            if vp_yn_idx_in_group.get(nouns[i], '') == 'Y':
+                            if self.vp_yn['1'].get(nouns[i], '') == 'Y':
                                 if vp_yn_idx_in_group.get(nouns[i], '') != '':
                                     if vp_data_idx not in vp_yn_idx_in_group[nouns[i]]:
                                         vp_yn_idx_in_group[nouns[i]].append(vp_data_idx)
@@ -72,7 +78,7 @@ class runner():
             self.vp_yn_idx[group_no] = vp_yn_idx_in_group
         self.ready_to_predict = True
     
-    def predict(self, x, min_vp_voca_same_rate, vp_threshold, less_threshold_decrease_point):
+    def predict(self, x):
         try_cnt = 0                
         while self.ready_to_predict == False:
             if self.error:
@@ -84,12 +90,12 @@ class runner():
         
         similar_sample_res = []
         max_prob_res = 0
+        nouns, tokenized = tokenization.extract_vp_word_in_pos(tokenization.pos(x.replace('\n', '^')), self.vp_yn['1'], self.voca_weight['1'])
         for group_no in self.vp_data_nouns:
             sample_nouns = []
             sample_with_tag = []
             sample_tokenized = []
-            nouns, tokenized = tokenization.extract_vp_word_in_pos(tokenization.pos(x.replace('\n', '^')), self.vp_yn)
-            x_vp_yn_cnt = 0
+            x_vp_yn_cnt = 0            
             for n in nouns:
                 if self.vp_yn.get(group_no, '') != '':
                     if self.vp_yn[group_no].get(n, '') == 'Y':
@@ -110,30 +116,26 @@ class runner():
                     sample_tokenized.append(self.vp_data_tokenized[group_no][key])
             x = nouns
             if len(sample_with_tag) > 0:
-                max_prob, similar_sample = self.get_jaro_winkler_score(x, sample_tokenized, sample_nouns, vp_threshold, less_threshold_decrease_point)
+                max_prob, similar_sample = self.get_jaro_winkler_score(x, sample_tokenized, sample_nouns)
                 if len(similar_sample) == 0:
                     similar_sample = [['Not Found', 0]]
                 max_prob_res = max(max_prob, max_prob_res)
                 similar_sample_res.append(similar_sample)
             else:
-                max_prob, similar_sample = 0, [['Not Found', 0]]                
+                similar_sample = [['Not Found', 0]]                
                 similar_sample_res.append(similar_sample)
+        print(similar_sample_res)
+        return max_prob_res, similar_sample_res, tokenized
         
-        return max_prob, similar_sample, tokenized
-        
-    def get_jaro_winkler_score(self, x, sample, nouns, vp_threshold, less_threshold_decrease_point):
+    def get_jaro_winkler_score(self, x, sample, nouns):
         similar_sample = []            
-        max_prob = 0        
+        max_prob = 0
         for i in range(len(nouns)):
-            if len(x) > len(nouns[i]):
-                continue
             sample_len = min(len(nouns[i]), max(len(x), 100))
             d = {}
-            prob = round(jaro_wrinkler.new_jaro_wrinkler(x, nouns[i][:sample_len], self.voca_weight) * 100)
+            prob = round(jaro_wrinkler.new_jaro_wrinkler(x, nouns[i][:sample_len], self.voca_weight['1']) * 100)
             if prob == 0 or prob == 100:
-                continue
-            if prob < int(vp_threshold):
-                prob = max(prob - int(less_threshold_decrease_point), 0)
+                continue 
             d['res'] = [sample[i], prob, nouns[i], sample_len]
             max_prob = max(prob, max_prob)
             similar_sample.append(d)
