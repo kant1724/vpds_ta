@@ -124,7 +124,7 @@ class runner():
             else:
                 similar_sample = [['Not Found', 0]]                
                 similar_sample_res.append(similar_sample)
-        print(similar_sample_res)
+        similar_sample_res = similar_sample_res[0]
         return max_prob_res, similar_sample_res, tokenized
         
     def get_jaro_winkler_score(self, x, sample, nouns):
