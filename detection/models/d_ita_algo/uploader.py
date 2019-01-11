@@ -39,11 +39,7 @@ def upload_vp_data(root, user, project, data_type, vp_data, voca_list):
                     for i in range(len(vp_data_in_group)):
                         vp_text = vp_data_in_group[i]
                         nouns, tokenized = tokenization.extract_vp_word_in_pos(tokenization.pos(vp_text), vp_yn_dict)
-                        nnouns = []
-                        for n in nouns:
-                            if voca_weight_dict.get(n, None) != None:
-                                nnouns.append(n)
                         fw1.write(" ".join(tokenized) + '\n')
-                        fw2.write(" ".join(nnouns) + '\n')
-                        fw3.write(" ".join(tokenization.tagging_words(nnouns, voca_entity_dict)) + '\n')
+                        fw2.write(" ".join(nouns) + '\n')
+                        fw3.write(" ".join(tokenization.tagging_words(nouns, voca_entity_dict)) + '\n')
                         

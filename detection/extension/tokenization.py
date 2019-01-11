@@ -15,7 +15,7 @@ def get_tokenized_text_to_train(vp_data_list, cnn_training_target):
 def pos(text):
     return cm.pos(text)
 
-def extract_vp_word_in_pos(pos, vp_yn, voca_weight):
+def extract_vp_word_in_pos(pos, vp_yn):
     start = 0
     len_res = len(pos)
     nouns = []
@@ -24,26 +24,23 @@ def extract_vp_word_in_pos(pos, vp_yn, voca_weight):
         if start + 2 < len_res:
             three_part = pos[start][0] + pos[start + 1][0] + pos[start + 2][0]
             if vp_yn.get(three_part, None) != None:
-                if (voca_weight.get(three_part, None) != None):
-                    tokenized.append(three_part)
-                    nouns.append(three_part)
-                    start += 3                
-                    continue
+                tokenized.append(three_part)
+                nouns.append(three_part)
+                start += 3                
+                continue
         if start + 1 < len_res:
             two_part = pos[start][0] + pos[start + 1][0]
             if vp_yn.get(two_part, None) != None:
-                if (voca_weight.get(two_part, None) != None):
-                    tokenized.append(two_part)
-                    nouns.append(two_part)
-                    start += 2
-                    continue
+                tokenized.append(two_part)
+                nouns.append(two_part)
+                start += 2
+                continue
         first = pos[start][0]
         t = pos[start][1]
         tokenized.append(first)
         if t == 'NNP' or t == 'NNG' or t == 'UNDEFINED':
             if len(first) > 1:
-                if (voca_weight.get(first, None) != None):
-                    nouns.append(first)
+                nouns.append(first)
         start += 1
     
     return nouns, tokenized

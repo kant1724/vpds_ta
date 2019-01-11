@@ -90,7 +90,7 @@ class runner():
         
         similar_sample_res = []
         max_prob_res = 0
-        nouns, tokenized = tokenization.extract_vp_word_in_pos(tokenization.pos(x.replace('\n', '^')), self.vp_yn['1'], self.voca_weight['1'])
+        nouns, tokenized = tokenization.extract_vp_word_in_pos(tokenization.pos(x.replace('\n', '^')), self.vp_yn['1'])
         for group_no in self.vp_data_nouns:
             sample_nouns = []
             sample_with_tag = []
@@ -131,24 +131,21 @@ class runner():
         similar_sample = []            
         max_prob = 0
         for i in range(len(nouns)):
-            sample_len = min(len(nouns[i]), max(len(x), 100))
             d = {}
-            prob = round(jaro_wrinkler.new_jaro_wrinkler(x, nouns[i][:sample_len], self.voca_weight['1']) * 100)
+            prob = round(jaro_wrinkler.new_jaro_wrinkler(x, nouns[i], self.voca_weight['1']) * 100)
             if prob == 0 or prob == 100:
                 continue 
-            d['res'] = [sample[i], prob, nouns[i], sample_len]
+            d['res'] = [sample[i], prob, nouns[i]]
             max_prob = max(prob, max_prob)
             similar_sample.append(d)
         
         similar_sample = sorted(similar_sample, key=lambda item: item['res'][1], reverse=True)
-        
         res = []
         for i in range(min(len(similar_sample), 5)):
             tokenized_text = similar_sample[i]['res'][0]
             prob = similar_sample[i]['res'][1]
             nouns = similar_sample[i]['res'][2]
-            sample_len = similar_sample[i]['res'][3]
-            res.append([self.get_part_of_tokenized_text(tokenized_text, nouns[:sample_len]), prob])
+            res.append([self.get_part_of_tokenized_text(tokenized_text, nouns), prob])
 
         return max_prob, res
 
