@@ -20,6 +20,7 @@ urlpatterns = [
     path('get_answer_from_cnn', views.get_answer_from_cnn, name='get_answer_from_cnn'),
     path('get_answer_from_jw', views.get_answer_from_jw, name='get_answer_from_jw'),
     path('get_answer_from_doc2vec', views.get_answer_from_doc2vec, name='get_answer_from_doc2vec'),
+    path('get_answer_from_ita_algo', views.get_answer_from_ita_algo, name='get_answer_from_ita_algo'),    
     path('get_probability', views.get_probability, name='get_probability'),
     path('start_training', views.start_training, name='start_training'),
     path('stop_training', views.stop_training, name='stop_training'),

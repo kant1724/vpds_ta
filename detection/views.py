@@ -2,6 +2,7 @@ from django.http import JsonResponse
 from detection.models.a_cnn import worker as cnn_worker
 from detection.models.b_jaro_winkler import worker as jaro_winkler_worker
 from detection.models.c_doc2vec import worker as doc2vec_worker
+from detection.models.d_ita_algo import worker as ita_algo_worker
 from django.views.decorators.csrf import csrf_exempt
 import json
 
@@ -37,6 +38,14 @@ def get_answer_from_doc2vec(request):
     return JsonResponse({"predict_result" : predict_result, "similar_sample" : similar_sample, "tokenized" : tokenized})
 
 @csrf_exempt
+def get_answer_from_ita_algo(request):
+    user, project, data_type = request.POST.get('user', ''), request.POST.get('project', ''), request.POST.get('data_type', '')
+    x = request.POST.get('x', '')
+    predict_result, similar_sample, tokenized = ita_algo_worker.get_answer(user, project, data_type, x)
+    
+    return JsonResponse({"predict_result" : predict_result, "similar_sample" : similar_sample, "tokenized" : tokenized})
+
+@csrf_exempt
 def start_training(request):
     user, project, data_type, end_step, language = request.POST.get('user', ''), request.POST.get('project', ''), request.POST.get('data_type', ''), request.POST.get('end_step', ''), request.POST.get('language', '')
     x, y = eval(request.POST.get('x', '')), eval(request.POST.get('y', ''))
@@ -50,6 +59,9 @@ def start_training(request):
     elif model_type == '3':
         doc2vec_worker.upload_training_data(user, project, data_type, x, voca_list)
         doc2vec_worker.start_training(user, project, data_type, end_step)
+    elif model_type == '4':
+        ita_algo_worker.upload_vp_data(user, project, data_type, x, voca_list)
+        ita_algo_worker.start_training(user, project, data_type, end_step)
     
     return JsonResponse({})
 
@@ -70,6 +82,8 @@ def get_training_info(request):
         training_info, end_step = cnn_worker.get_training_info(user, project, data_type)
     elif model_type == '3':
         training_info, end_step = doc2vec_worker.get_training_info(user, project, data_type)
+    elif model_type == '4':
+        training_info, end_step = ita_algo_worker.get_training_info(user, project, data_type)
     
     return JsonResponse({"training_info" : training_info, "end_step" : end_step})
 

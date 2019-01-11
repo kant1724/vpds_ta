@@ -42,12 +42,13 @@ class runner():
             new_vector = self.model[key].infer_vector(nouns)
             res = self.model[key].docvecs.most_similar([new_vector])
             for i in range(5):
+                print(res)
                 prob = round(res[i][1] * 100)
                 tokenized_vp_text = self.tokenized_vp_data[key][res[i][0]]
                 if tokenized == tokenized_vp_text.split(" "):
                     continue
                 similar_sample.append([tokenized_vp_text, prob])
                 max_prob = max(max_prob, prob)
-        similar_sample = sorted(similar_sample, key=lambda x: x[1], reverse=True)[:5]
+        similar_sample = sorted(similar_sample, key=lambda x: x[1], reverse=True)[:5]        
         
         return max_prob, similar_sample, tokenized
