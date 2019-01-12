@@ -1,7 +1,7 @@
 import os
 import time
 from detection.extension import tokenization
-from detection.models.d_ita_algo.engine import jaro_wrinkler
+from detection.models.d_ita_algo.engine import ita_algo
 
 class runner():
     vp_yn = {}
@@ -116,7 +116,7 @@ class runner():
                     sample_tokenized.append(self.vp_data_tokenized[group_no][key])
             x = nouns
             if len(sample_with_tag) > 0:
-                max_prob, similar_sample = self.get_jaro_winkler_score(x, sample_tokenized, sample_nouns)
+                max_prob, similar_sample = self.get_ita_algo_score(x, sample_tokenized, sample_nouns)
                 if len(similar_sample) == 0:
                     similar_sample = [['Not Found', 0]]
                 max_prob_res = max(max_prob, max_prob_res)
@@ -126,16 +126,15 @@ class runner():
                 similar_sample_res.append(similar_sample)
         return max_prob_res, similar_sample_res, tokenized
         
-    def get_jaro_winkler_score(self, x, sample, nouns):
+    def get_ita_algo_score(self, x, sample, nouns):
         similar_sample = []            
         max_prob = 0
         for i in range(len(nouns)):
-            sample_len = min(len(nouns[i]), max(len(x), 100))
             d = {}
-            prob = round(jaro_wrinkler.new_jaro_wrinkler(x, nouns[i], self.voca_weight['1']) * 100)
+            prob = round(ita_algo.get_prob(x, nouns[i], self.voca_weight['1']) * 100)
             if prob == 0 or prob == 100:
                 continue 
-            d['res'] = [sample[i], prob, nouns[i], sample_len]
+            d['res'] = [sample[i], prob, nouns[i]]
             max_prob = max(prob, max_prob)
             similar_sample.append(d)
         
@@ -146,8 +145,7 @@ class runner():
             tokenized_text = similar_sample[i]['res'][0]
             prob = similar_sample[i]['res'][1]
             nouns = similar_sample[i]['res'][2]
-            sample_len = similar_sample[i]['res'][3]
-            res.append([self.get_part_of_tokenized_text(tokenized_text, nouns[:sample_len]), prob])
+            res.append([self.get_part_of_tokenized_text(tokenized_text, nouns), prob])
 
         return max_prob, res
 
