@@ -2,6 +2,7 @@ import os
 import time
 from detection.extension import tokenization
 from detection.models.d_ita_algo.engine import ita_algo
+import gensim.models as g
 
 class runner():
     vp_yn = {}
@@ -15,6 +16,7 @@ class runner():
     error = False
     SLEEP_TIME = 0.5
     retry_limit = 200
+    doc2vec_model = {}
     
     def init(self, root, user, project, data_type):
         self.vp_yn = {'1' : {}}
@@ -77,6 +79,7 @@ class runner():
             self.vp_data_tokenized[group_no] = vp_data_tokenized_in_group
             self.vp_yn_idx[group_no] = vp_yn_idx_in_group
         self.ready_to_predict = True
+        self.load_doc2vec(root, user, project, data_type)        
     
     def predict(self, x):
         try_cnt = 0                
@@ -90,11 +93,21 @@ class runner():
         
         similar_sample_res = []
         max_prob_res = 0
-        nouns, tokenized = tokenization.extract_vp_word_in_pos(tokenization.pos(x.replace('\n', '^')), self.vp_yn['1'])
+        nnouns, tokenized = tokenization.extract_vp_word_in_pos(tokenization.pos(x.replace('\n', '^')), self.vp_yn['1'])
+        nouns = []
+        for i in range(len(nnouns)):
+            if self.voca_weight['1'].get(nnouns[i], None) != None:
+                nouns.append(nnouns[i])
         for group_no in self.vp_data_nouns:
+            doc2vec_score = self.get_doc2vec_score(nouns, group_no)
+            print(doc2vec_score)
+            doc2vec_score_dict = {}
+            for i in range(len(doc2vec_score)):
+                doc2vec_score_dict[doc2vec_score[i][0]] = doc2vec_score[i][1]
             sample_nouns = []
             sample_with_tag = []
             sample_tokenized = []
+            sample_doc2vec_score = []
             x_vp_yn_cnt = 0            
             for n in nouns:
                 if self.vp_yn.get(group_no, '') != '':
@@ -109,14 +122,16 @@ class runner():
                             vp_yn_cnt[vp_yn_data_idx] = 1
                         else:
                             vp_yn_cnt[vp_yn_data_idx] += 1
+            
             for key, value in vp_yn_cnt.items():
-                if value >= 1:
+                if value >= 2:
                     sample_nouns.append(self.vp_data_nouns[group_no][key])                
                     sample_with_tag.append(self.vp_data_with_tag[group_no][key])
                     sample_tokenized.append(self.vp_data_tokenized[group_no][key])
+                    sample_doc2vec_score.append(doc2vec_score_dict.get(key, 0))
             x = nouns
             if len(sample_with_tag) > 0:
-                max_prob, similar_sample = self.get_ita_algo_score(x, sample_tokenized, sample_nouns)
+                max_prob, similar_sample = self.get_ita_algo_score(x, sample_tokenized, sample_nouns, sample_doc2vec_score)
                 if len(similar_sample) == 0:
                     similar_sample = [['Not Found', 0]]
                 max_prob_res = max(max_prob, max_prob_res)
@@ -126,7 +141,7 @@ class runner():
                 similar_sample_res.append(similar_sample)
         return max_prob_res, similar_sample_res, tokenized
         
-    def get_ita_algo_score(self, x, sample, nouns):
+    def get_ita_algo_score(self, x, sample, nouns, doc2vec_score):
         similar_sample = []            
         max_prob = 0
         for i in range(len(nouns)):
@@ -134,6 +149,10 @@ class runner():
             prob = round(ita_algo.get_prob(x, nouns[i], self.voca_weight['1']) * 100)
             if prob == 0 or prob == 100:
                 continue 
+            if doc2vec_score[i] >= 60:
+                prob = round(min(100, prob * 1.2))
+            else:
+                prob = round(min(100, prob * 0.8))                
             d['res'] = [sample[i], prob, nouns[i]]
             max_prob = max(prob, max_prob)
             similar_sample.append(d)
@@ -165,3 +184,23 @@ class runner():
                 return res
         
         return res
+
+    def load_doc2vec(self, root, user, project, data_type):
+        model_path = os.path.join(root, user, project, data_type, 'working_dir')
+        model_list = os.listdir(model_path)
+        for each_model in model_list:
+            group_no = each_model.split('.')[2]
+            self.doc2vec_model[group_no] = g.Doc2Vec.load(os.path.join(model_path, each_model))
+                        
+    def get_doc2vec_score(self, x, group_no):
+        similar_sample = []
+        for key in self.doc2vec_model:            
+            if key == group_no:
+                new_vector = self.doc2vec_model[key].infer_vector(x)
+                res = self.doc2vec_model[key].docvecs.most_similar([new_vector])
+                for i in range(len(res)):
+                    prob = round(res[i][1] * 100)
+                    similar_sample.append([res[i][0], prob])
+                return similar_sample
+        return None
+        
