@@ -137,13 +137,13 @@ class runner():
                 if len(similar_sample) == 0:
                     similar_sample = [['Not Found', 0]]
                 max_prob_res = max(max_prob, max_prob_res)
-                similar_sample_res.append(similar_sample)
+                for ss in similar_sample:
+                    similar_sample_res.append(ss)
             else:
-                similar_sample = [['Not Found', 0]]                
+                similar_sample = ['Not Found', 0]            
                 similar_sample_res.append(similar_sample)
                 
-            similar_sample_res = sorted(similar_sample, key=lambda item: item[1], reverse=True)[0 : 5]
-            
+        similar_sample_res = [sorted(similar_sample_res, key=lambda item: item[1], reverse=True)[:5]]
         return max_prob_res, similar_sample_res, tokenized
         
     def get_ita_algo_score(self, x, sample, nouns, group_no):
