@@ -141,6 +141,9 @@ class runner():
             else:
                 similar_sample = [['Not Found', 0]]                
                 similar_sample_res.append(similar_sample)
+                
+            similar_sample_res = sorted(similar_sample, key=lambda item: item[1], reverse=True)[0 : 5]
+            
         return max_prob_res, similar_sample_res, tokenized
         
     def get_ita_algo_score(self, x, sample, nouns, group_no):
