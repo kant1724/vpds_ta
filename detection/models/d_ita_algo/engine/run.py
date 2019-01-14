@@ -19,9 +19,9 @@ class runner():
     doc2vec_model = {}
     
     def init(self, root, user, project, data_type):
-        self.vp_yn = {'1' : {}}
-        self.voca_weight = {'1' : {}}
-        self.voca_entity = {'1' : {}}
+        self.vp_yn = {}
+        self.voca_weight = {}
+        self.voca_entity = {}
         self.vp_data_nouns = {}
         self.vp_data_with_tag = {}
         self.vp_data_tokenized = {}
@@ -30,20 +30,22 @@ class runner():
         self.error = False
         path = os.path.join(root, user, project, data_type, 'vp_data_file')
         self.error = False
-        with open(os.path.join(path, 'voca_data.txt'), 'r', encoding='utf8') as f:
-            vp_yn_in_group = {}
-            voca_entity_in_group = {}
-            voca_weight_in_group = {}
-            lines = f.readlines()
-            for line in lines:
-                line = line.replace('\n', '')
-                arr = line.split('^')
-                voca_entity_in_group[arr[0]] = arr[1]
-                vp_yn_in_group[arr[0]] = arr[2]
-                voca_weight_in_group[arr[0]] = arr[3]
-        self.vp_yn['1'] = vp_yn_in_group
-        self.voca_entity['1'] = voca_entity_in_group
-        self.voca_weight['1'] = voca_weight_in_group
+        group_list = os.listdir(path)
+        for group_no in group_list:
+            with open(os.path.join(path, group_no, 'voca_data.txt'), 'r', encoding='utf8') as f:
+                vp_yn_in_group = {}
+                voca_entity_in_group = {}
+                voca_weight_in_group = {}
+                lines = f.readlines()
+                for line in lines:
+                    line = line.replace('\n', '')
+                    arr = line.split('^')
+                    voca_entity_in_group[arr[0]] = arr[1]
+                    vp_yn_in_group[arr[0]] = arr[2]
+                    voca_weight_in_group[arr[0]] = arr[3]
+            self.vp_yn[group_no] = vp_yn_in_group
+            self.voca_entity[group_no] = voca_entity_in_group
+            self.voca_weight[group_no] = voca_weight_in_group
         group_list = os.listdir(path)
         for group_no in group_list:
             if os.path.isdir(os.path.join(path, group_no)) == False:
@@ -93,21 +95,18 @@ class runner():
         
         similar_sample_res = []
         max_prob_res = 0
-        nnouns, tokenized = tokenization.extract_vp_word_in_pos(tokenization.pos(x.replace('\n', '^')), self.vp_yn['1'])
-        nouns = []
-        for i in range(len(nnouns)):
-            if self.voca_weight['1'].get(nnouns[i], None) != None:
-                nouns.append(nnouns[i])
+        g_nouns = {}
         for group_no in self.vp_data_nouns:
-            doc2vec_score = self.get_doc2vec_score(nouns, group_no)
-            print(doc2vec_score)
-            doc2vec_score_dict = {}
-            for i in range(len(doc2vec_score)):
-                doc2vec_score_dict[doc2vec_score[i][0]] = doc2vec_score[i][1]
+            nnouns, tokenized = tokenization.extract_vp_word_in_pos(tokenization.pos(x.replace('\n', '^')), self.vp_yn[group_no])
+            g_nouns[group_no] = []
+            for i in range(len(nnouns)):
+                if self.voca_weight[group_no].get(nnouns[i], None) != None:
+                    g_nouns[group_no].append(nnouns[i])
+        for group_no in self.vp_data_nouns:
+            nouns = g_nouns[group_no]
             sample_nouns = []
             sample_with_tag = []
             sample_tokenized = []
-            sample_doc2vec_score = []
             x_vp_yn_cnt = 0            
             for n in nouns:
                 if self.vp_yn.get(group_no, '') != '':
@@ -128,10 +127,19 @@ class runner():
                     sample_nouns.append(self.vp_data_nouns[group_no][key])                
                     sample_with_tag.append(self.vp_data_with_tag[group_no][key])
                     sample_tokenized.append(self.vp_data_tokenized[group_no][key])
-                    sample_doc2vec_score.append(doc2vec_score_dict.get(key, 0))
             x = nouns
             if len(sample_with_tag) > 0:
-                max_prob, similar_sample = self.get_ita_algo_score(x, sample_tokenized, sample_nouns, sample_doc2vec_score)
+                max_prob, similar_sample = self.get_ita_algo_score(x, sample_tokenized, sample_nouns, group_no)
+                if max_prob > 60:
+                    doc2vec_score = self.get_doc2vec_score(nouns, group_no)
+                    print(doc2vec_score)
+                    doc2vec_prob = doc2vec_score[0][1]
+                    if doc2vec_prob > 50:
+                        max_prob += doc2vec_prob / 4
+                    else:
+                        max_prob -= doc2vec_prob / 4
+                    max_prob = min(max_prob, 100)
+                    
                 if len(similar_sample) == 0:
                     similar_sample = [['Not Found', 0]]
                 max_prob_res = max(max_prob, max_prob_res)
@@ -141,18 +149,14 @@ class runner():
                 similar_sample_res.append(similar_sample)
         return max_prob_res, similar_sample_res, tokenized
         
-    def get_ita_algo_score(self, x, sample, nouns, doc2vec_score):
+    def get_ita_algo_score(self, x, sample, nouns, group_no):
         similar_sample = []            
         max_prob = 0
         for i in range(len(nouns)):
             d = {}
-            prob = round(ita_algo.get_prob(x, nouns[i], self.voca_weight['1']) * 100)
+            prob = round(ita_algo.get_prob(x, nouns[i], self.voca_weight[group_no]) * 100)
             if prob == 0 or prob == 100:
                 continue 
-            if doc2vec_score[i] >= 60:
-                prob = round(min(100, prob * 1.2))
-            else:
-                prob = round(min(100, prob * 0.8))                
             d['res'] = [sample[i], prob, nouns[i]]
             max_prob = max(prob, max_prob)
             similar_sample.append(d)
@@ -202,5 +206,4 @@ class runner():
                     prob = round(res[i][1] * 100)
                     similar_sample.append([res[i][0], prob])
                 return similar_sample
-        return None
-        
+        return None        
