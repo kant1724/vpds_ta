@@ -62,7 +62,7 @@ class runner():
                         line = line.replace('\n', '')
                         nouns = line.split(' ')
                         for i in range(len(nouns)):
-                            if self.vp_yn['1'].get(nouns[i], '') == 'Y':
+                            if self.vp_yn[group_no].get(nouns[i], '') == 'Y':
                                 if vp_yn_idx_in_group.get(nouns[i], '') != '':
                                     if vp_data_idx not in vp_yn_idx_in_group[nouns[i]]:
                                         vp_yn_idx_in_group[nouns[i]].append(vp_data_idx)
@@ -132,14 +132,8 @@ class runner():
                 max_prob, similar_sample = self.get_ita_algo_score(x, sample_tokenized, sample_nouns, group_no)
                 if max_prob > 60:
                     doc2vec_score = self.get_doc2vec_score(nouns, group_no)
-                    print(doc2vec_score)
-                    doc2vec_prob = doc2vec_score[0][1]
-                    if doc2vec_prob > 50:
-                        max_prob += doc2vec_prob / 4
-                    else:
-                        max_prob -= doc2vec_prob / 4
-                    max_prob = min(max_prob, 100)
-                    
+                    doc2vec_prob = doc2vec_score[0][1]                    
+                    max_prob = min(max(round(max_prob * 0.6 + doc2vec_prob * 0.4), max_prob), 100)
                 if len(similar_sample) == 0:
                     similar_sample = [['Not Found', 0]]
                 max_prob_res = max(max_prob, max_prob_res)
