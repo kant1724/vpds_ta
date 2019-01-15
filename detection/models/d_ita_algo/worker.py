@@ -18,6 +18,18 @@ def upload_vp_data(user, project, data_type, vp_data, voca_list):
 def start_training(user, project, data_type, end_step):
     tt.start_training_thread(user, project, data_type, end_step)    
 
+def is_training(user, project, data_type): 
+    res = tt.get_trainer_object(user, project, data_type)
+    is_training_yn = 'N'
+    if res != None:
+        end_yn = res.is_end()
+        if end_yn == 'Y':
+            tt.remove_training_thread(user, project, data_type)
+        else:
+            is_training_yn = 'Y'
+        
+    return is_training_yn
+
 def get_training_info(user, project, data_type):
     res = tt.get_trainer_object(user, project, data_type)
     if res != None:

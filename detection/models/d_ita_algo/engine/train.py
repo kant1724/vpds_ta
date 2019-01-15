@@ -39,7 +39,7 @@ class trainer():
                               dbow_words=1, dm_concat=1, iter=self.train_epoch)
             
             model.save(save_path)
-            self.end_yn = 'Y'
+        self.end_yn = 'Y'
 
     def is_end(self):
         return self.end_yn

@@ -95,6 +95,8 @@ def is_training(request):
         is_training_yn = cnn_worker.is_training(user, project, data_type)
     elif model_type == '3':
         is_training_yn = doc2vec_worker.is_training(user, project, data_type)
+    elif model_type == '4':
+        is_training_yn = ita_algo_worker.is_training(user, project, data_type)
     else:
         is_training_yn = 'N' 
     
