@@ -29,6 +29,8 @@ def upload_vp_data(root, user, project, data_type, vp_data, voca_list):
     
     for key in group:
         group_dir = os.path.join(path, str(key))
+        if voca_group.get(key, None) == None:
+            voca_group[key] = {'voca_nm' : 'Empty', 'voca_entity' : '', 'vp_yn' : 'N', 'voca_weight' : '1', 'group_no' : key}
         if os.path.isdir(group_dir) == False:
             os.makedirs(group_dir)
         with open(os.path.join(group_dir, 'voca_data.txt'), 'w', encoding='utf8') as fw:
@@ -48,7 +50,7 @@ def upload_vp_data(root, user, project, data_type, vp_data, voca_list):
                 voca_weight_dict[key][voca_nm] = voca_weight
     
     for key in group:
-        group_dir = os.path.join(path, str(key))
+        group_dir = os.path.join(path, str(key))        
         if os.path.isdir(group_dir) == False:
             os.makedirs(group_dir)
         with open(os.path.join(group_dir, 'tokenized_vp_data.txt'), 'w', encoding='utf8') as fw1:
