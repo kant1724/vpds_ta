@@ -20,6 +20,6 @@ def get_answer(root, user, project, data_type, x):
         runner = run.runner()
         runner.init(root, user, project, data_type)
         runner_thread.append({"user" : user, "project" : project, "data_type" : data_type, "runner" : runner})
-    predict_result, similar_sample, tokenized = runner.predict(x)
+    predict_result, similar_sample, tokenized, max_prob_group_no = runner.predict(x)
     
-    return predict_result, similar_sample, tokenized
+    return predict_result, similar_sample, tokenized, max_prob_group_no

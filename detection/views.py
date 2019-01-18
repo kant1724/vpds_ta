@@ -41,9 +41,9 @@ def get_answer_from_doc2vec(request):
 def get_answer_from_ita_algo(request):
     user, project, data_type = request.POST.get('user', ''), request.POST.get('project', ''), request.POST.get('data_type', '')
     x = request.POST.get('x', '')
-    predict_result, similar_sample, tokenized = ita_algo_worker.get_answer(user, project, data_type, x)
+    predict_result, similar_sample, tokenized, max_prob_group_no = ita_algo_worker.get_answer(user, project, data_type, x)
     
-    return JsonResponse({"predict_result" : predict_result, "similar_sample" : similar_sample, "tokenized" : tokenized})
+    return JsonResponse({"predict_result" : predict_result, "similar_sample" : similar_sample, "tokenized" : tokenized, 'max_prob_group_no' : max_prob_group_no})
 
 @csrf_exempt
 def start_training(request):
@@ -120,7 +120,7 @@ def get_probability(request):
     min_vp_voca_same_rate = 0
     vp_threshold = 50
     less_threshold_decrease_point = 10
-    predict_result, _, _= ita_algo_worker.get_answer(user, project, data_type, x)
+    predict_result, _, _, _ = ita_algo_worker.get_answer(user, project, data_type, x)
         
     return JsonResponse({"reply" : float(predict_result) / 100})
 

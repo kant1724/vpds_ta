@@ -7,9 +7,9 @@ from detection.models.d_ita_algo import properties as p
 from detection.models.d_ita_algo import uploader
 
 def get_answer(user, project, data_type, x):    
-    predict_result, similar_sample, tokenized = rt.get_answer(p.get_root(), user, project, data_type, x)
+    predict_result, similar_sample, tokenized, max_prob_group_no = rt.get_answer(p.get_root(), user, project, data_type, x)
     
-    return str(predict_result), str(similar_sample), str(tokenized)
+    return str(predict_result), str(similar_sample), str(tokenized), str(max_prob_group_no)
 
 def upload_vp_data(user, project, data_type, vp_data, voca_list):
     rt.remove_runner(user, project, data_type)

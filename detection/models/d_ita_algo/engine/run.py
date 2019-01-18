@@ -102,6 +102,7 @@ class runner():
             for i in range(len(nnouns)):
                 if self.voca_weight[group_no].get(nnouns[i], None) != None:
                     g_nouns[group_no].append(nnouns[i])
+        max_prob_group_no = 1
         for group_no in self.vp_data_nouns:
             nouns = g_nouns[group_no]
             sample_nouns = []
@@ -135,7 +136,9 @@ class runner():
                 max_prob = min(round(max_prob * 0.5 + doc2vec_prob * 0.5), 100)
                 if len(similar_sample) == 0:
                     similar_sample = [['Not Found', 0]]
-                max_prob_res = max(max_prob, max_prob_res)
+                if max_prob_res < max_prob:
+                    max_prob_group_no = group_no
+                    max_prob_res = max_prob
                 for ss in similar_sample:
                     similar_sample_res.append(ss)
             else:
@@ -143,7 +146,7 @@ class runner():
                 similar_sample_res.append(similar_sample)
                 
         similar_sample_res = [sorted(similar_sample_res, key=lambda item: item[1], reverse=True)[:5]]
-        return max_prob_res, similar_sample_res, tokenized
+        return max_prob_res, similar_sample_res, tokenized, max_prob_group_no
         
     def get_ita_algo_score(self, x, sample, nouns, group_no):
         similar_sample = []            
