@@ -122,7 +122,7 @@ def get_probability(request):
     less_threshold_decrease_point = 10
     predict_result, _, _, max_prob_group_no = ita_algo_worker.get_answer(user, project, data_type, x)
         
-    return JsonResponse({"reply" : float(predict_result) / 100, "vp_type" : max_prob_group_no})
+    return JsonResponse({"reply" : float(predict_result) / 100, "vp_flag" : max_prob_group_no})
 
 @csrf_exempt
 def upload_vp_data(request):
