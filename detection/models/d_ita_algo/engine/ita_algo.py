@@ -17,7 +17,7 @@ def get_prob(ying, yang, voca_weight):
     yang_sub = 0
     already_1 = {}
     for i in range(len(yang)):
-        if already_1[yang[i]] == True:
+        if already_1.get(yang[i], None) == True:
             continue
         if voca_weight.get(yang[i], None) != None:
             additional_point = int(voca_weight[yang[i]])
@@ -34,7 +34,7 @@ def get_prob(ying, yang, voca_weight):
     cnt = 1
     already_2 = {}
     for i, ying_ch in enumerate(ying):
-        if already_2[ying] == True:
+        if already_2.get(ying, None) == True:
             continue
         low = i - search_range if i > search_range else 0
         hi = i + search_range if i + search_range < yang_len else yang_len - 1
