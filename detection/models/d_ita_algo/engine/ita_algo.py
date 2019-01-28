@@ -34,7 +34,7 @@ def get_prob(ying, yang, voca_weight):
     cnt = 1
     already_2 = {}
     for i, ying_ch in enumerate(ying):
-        if already_2.get(ying, None) == True:
+        if already_2.get(ying_ch, None) == True:
             continue
         low = i - search_range if i > search_range else 0
         hi = i + search_range if i + search_range < yang_len else yang_len - 1
@@ -50,7 +50,7 @@ def get_prob(ying, yang, voca_weight):
                 cnt += 1
                 cur += 1
                 break
-        already_2[ying] = True
+        already_2[ying_ch] = True
     # short circuit if no characters match
     if not common_chars:
         return 0.0
