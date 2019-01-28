@@ -22,16 +22,13 @@ def get_prob(ying, yang, voca_weight):
         low = i - search_range if i > search_range else 0
         hi = i + search_range if i + search_range < yang_len else yang_len - 1
         for j in range(low, hi+1):
-            if not yang_flags[j] and yang[j] == ying_ch:
+            if yang[j] == ying_ch:
                 if voca_weight.get(ying_ch, None) != None:
-                    ying_flags[i] = yang_flags[j] = True
                     additional_point = int(voca_weight[ying_ch])
                     val = pow(additional_point, 1.3)
                     common_chars += val
                     ying_sub += val
                     yang_sub += val
-                    cnt += 1
-                    cur += 1
                 break
     # short circuit if no characters match
     if not common_chars:
