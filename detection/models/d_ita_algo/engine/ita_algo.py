@@ -15,27 +15,10 @@ def get_prob(ying, yang, voca_weight):
 
     ying_sub = 0
     yang_sub = 0
-    already_1 = {}
-    for i in range(len(yang)):
-        if already_1.get(yang[i], None) == True:
-            continue
-        if voca_weight.get(yang[i], None) != None:
-            additional_point = int(voca_weight[yang[i]])
-            val = pow(additional_point, 1.3)
-            ying_sub += val
-            yang_sub += val
-        else:
-            ying_sub += 1
-            yang_sub += 1
-        already_1[yang[i]] = True
-    
     common_chars = 0
     cur = 0
     cnt = 1
-    already_2 = {}
     for i, ying_ch in enumerate(ying):
-        if already_2.get(ying_ch, None) == True:
-            continue
         low = i - search_range if i > search_range else 0
         hi = i + search_range if i + search_range < yang_len else yang_len - 1
         for j in range(low, hi+1):
@@ -45,12 +28,11 @@ def get_prob(ying, yang, voca_weight):
                     additional_point = int(voca_weight[ying_ch])
                     val = pow(additional_point, 1.3)
                     common_chars += val
-                else:
-                    common_chars += 1
-                cnt += 1
-                cur += 1
+                    ying_sub += val
+                    yang_sub += val
+                    cnt += 1
+                    cur += 1
                 break
-        already_2[ying_ch] = True
     # short circuit if no characters match
     if not common_chars:
         return 0.0
