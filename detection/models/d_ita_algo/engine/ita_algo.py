@@ -18,7 +18,7 @@ def get_prob(ying, yang, voca_weight):
     for i in range(len(yang)):
         if voca_weight.get(yang[i], None) != None:
             if voca_weight.get(yang[i], None) != None:
-                additional_point = int(voca_weight[yang[i]]) - 1
+                additional_point = int(voca_weight[yang[i]])
                 u = 1.3
                 val = pow(additional_point, u)
                 ying_sub += val
