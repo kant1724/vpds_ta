@@ -17,15 +17,13 @@ def get_prob(ying, yang, voca_weight):
     yang_sub = 0    
     for i in range(len(yang)):
         if voca_weight.get(yang[i], None) != None:
-            if voca_weight.get(yang[i], None) != None:
-                additional_point = int(voca_weight[yang[i]])
-                u = 1.3
-                val = pow(additional_point, u)
-                ying_sub += val
-                yang_sub += val
-            else:
-                ying_sub += 1
-                yang_sub += 1
+            additional_point = int(voca_weight[yang[i]])
+            val = pow(additional_point, 1.3)
+            ying_sub += val
+            yang_sub += val
+        else:
+            ying_sub += 1
+            yang_sub += 1
     
     common_chars = 0
     cur = 0
@@ -37,13 +35,12 @@ def get_prob(ying, yang, voca_weight):
             if not yang_flags[j] and yang[j] == ying_ch:
                 if voca_weight.get(ying_ch, None) != None:
                     ying_flags[i] = yang_flags[j] = True
-                    additional_point = int(voca_weight[ying_ch]) - 1
-                    if additional_point > 0:
-                        u = 1.3
-                        val = pow(additional_point, u)
-                        common_chars += val
+                    additional_point = int(voca_weight[ying_ch])
+                    val = pow(additional_point, 1.3)
+                    common_chars += val
+                else:
                     common_chars += 1
-                    cnt += 1
+                cnt += 1
                 cur += 1
                 break                
     # short circuit if no characters match
