@@ -10,34 +10,40 @@ def get_prob(ying, yang, voca_weight):
     if search_range < 0:
         search_range = 0
 
-    ying_flags = [False] * ying_len
-    yang_flags = [False] * yang_len
-
     ying_sub = 0
-    yang_sub = 0
+    already_1 = {}
+    for i in range(len(yang)):
+        if already_1.get(yang[i], None) == True:
+            continue
+        if voca_weight.get(yang[i], None) != None:
+            additional_point = int(voca_weight[yang[i]])
+            val = pow(additional_point, 1.5)
+            ying_sub += val
+        already_1[yang[i]] = True
+
     common_chars = 0
     cur = 0
     cnt = 1
+    already_2 = {}
     for i, ying_ch in enumerate(ying):
+        if already_2.get(ying_ch, None) == True:
+            continue
         low = i - search_range if i > search_range else 0
         hi = i + search_range if i + search_range < yang_len else yang_len - 1
         for j in range(low, hi+1):
             if yang[j] == ying_ch:
                 if voca_weight.get(ying_ch, None) != None:
                     additional_point = int(voca_weight[ying_ch])
-                    val = pow(additional_point, 1.3)
+                    val = pow(additional_point, 1.5)
                     common_chars += val
-                    ying_sub += val
-                    yang_sub += val
                 break
+        already_2[ying_ch] = True
     # short circuit if no characters match
     if not common_chars:
         return 0.0
 
     # adjust for similarities in nonmatched characters
     common_chars = float(common_chars)
-    a = common_chars / ying_sub
-    b = common_chars / yang_sub
-    weight = (a + b) / 2
+    weight = common_chars / ying_sub
 
     return weight
