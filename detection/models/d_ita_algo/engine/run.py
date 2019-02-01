@@ -146,7 +146,7 @@ class runner():
                 similar_sample_res.append(similar_sample)
 
         if len(x) < 200:
-            max_prob_res = 10
+            max_prob_res = 0
 
         similar_sample_res = [sorted(similar_sample_res, key=lambda item: item[1], reverse=True)[:5]]
         return max_prob_res, similar_sample_res, tokenized, max_prob_group_no
