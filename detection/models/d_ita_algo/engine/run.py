@@ -84,7 +84,7 @@ class runner():
         self.load_doc2vec(root, user, project, data_type)        
     
     def predict(self, x):
-        try_cnt = 0                
+        try_cnt = 0
         while self.ready_to_predict == False:
             if self.error:
                 return '', '', ''
@@ -128,9 +128,9 @@ class runner():
                     sample_nouns.append(self.vp_data_nouns[group_no][key])                
                     sample_with_tag.append(self.vp_data_with_tag[group_no][key])
                     sample_tokenized.append(self.vp_data_tokenized[group_no][key])
-            x = nouns
+            n = nouns
             if len(sample_with_tag) > 0:
-                max_prob, similar_sample = self.get_ita_algo_score(x, sample_tokenized, sample_nouns, group_no)
+                max_prob, similar_sample = self.get_ita_algo_score(n, sample_tokenized, sample_nouns, group_no)
                 doc2vec_score = self.get_doc2vec_score(nouns, group_no)
                 doc2vec_prob = doc2vec_score[0][1]                    
                 max_prob = min(round(max_prob * 1.0 + doc2vec_prob * 0.0), 100)
@@ -144,7 +144,10 @@ class runner():
             else:
                 similar_sample = ['Not Found', 0]            
                 similar_sample_res.append(similar_sample)
-                
+
+        if len(x) < 200:
+            max_prob_res = 10
+
         similar_sample_res = [sorted(similar_sample_res, key=lambda item: item[1], reverse=True)[:5]]
         return max_prob_res, similar_sample_res, tokenized, max_prob_group_no
         
