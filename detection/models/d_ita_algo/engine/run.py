@@ -131,9 +131,9 @@ class runner():
             n = nouns
             if len(sample_with_tag) > 0:
                 max_prob, similar_sample = self.get_ita_algo_score(n, sample_tokenized, sample_nouns, group_no)
-                doc2vec_score = self.get_doc2vec_score(nouns, group_no)
-                doc2vec_prob = doc2vec_score[0][1]                    
-                max_prob = min(round(max_prob * 1.0 + doc2vec_prob * 0.0), 100)
+                #doc2vec_score = self.get_doc2vec_score(nouns, group_no)
+                #doc2vec_prob = doc2vec_score[0][1]
+                max_prob = min(round(max_prob * 1.0), 100)
                 if len(similar_sample) == 0:
                     similar_sample = [['Not Found', 0]]
                 if max_prob_res < max_prob:
