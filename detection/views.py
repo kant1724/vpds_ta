@@ -4,6 +4,7 @@ from detection.models.b_jaro_winkler import worker as jaro_winkler_worker
 from detection.models.c_doc2vec import worker as doc2vec_worker
 from detection.models.d_ita_algo import worker as ita_algo_worker
 from django.views.decorators.csrf import csrf_exempt
+import logging, logging.config
 import json
 
 @csrf_exempt
@@ -122,7 +123,7 @@ def get_probability(request):
     less_threshold_decrease_point = 10
     predict_result, _, _, max_prob_group_no = ita_algo_worker.get_answer(user, project, data_type, x)
 
-    print('predict_result: ' + str(predict_result))
+    logging.info('predict_result: ' + str(predict_result))
 
     return JsonResponse({"reply" : float(predict_result) / 100, "flag" : max_prob_group_no})
 
