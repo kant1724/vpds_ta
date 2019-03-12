@@ -62,7 +62,7 @@ def start_training(request):
         doc2vec_worker.start_training(user, project, data_type, end_step)
     elif model_type == '4':
         ita_algo_worker.upload_vp_data(user, project, data_type, x, voca_list)
-        ita_algo_worker.start_training(user, project, data_type, end_step)
+        #ita_algo_worker.start_training(user, project, data_type, end_step)
     
     return JsonResponse({})
 
